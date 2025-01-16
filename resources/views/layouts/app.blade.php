@@ -33,4 +33,8 @@
             </main>
         </div>
     </body>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    @isset($scripts)
+        {{ $scripts }}
+    @endisset
 </html>

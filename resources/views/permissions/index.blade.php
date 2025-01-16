@@ -33,7 +33,9 @@
                                         <td class="px-6 py-4 text-left">{{ $permission->created_at->format('d/m/Y H:i') }}</td>
                                         <td class="px-6 py-4 text-center">
                                             <a href="{{ route('permissions.edit', $permission->id) }}" class="bg-slate-700 txt-sm text-white px-4 py-1 rounded-md hover:bg-slate-800">Edit</a>
-                                            <a href="{{ route('permissions.destroy', $permission->id) }}" class="bg-red-700 txt-sm text-white px-4 py-1 rounded-md hover:bg-red-800">Delete</a>
+                                            <a href="javascript:void(0)"
+                                                onclick="deletePermission({{ $permission->id }})"
+                                                class="bg-red-700 txt-sm text-white px-4 py-1 rounded-md hover:bg-red-800">Delete</a>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -47,4 +49,26 @@
             </div>
         </div>
     </div>
+    <x-slot name="scripts">
+        <script type="text/javascript">
+            function deletePermission(id) {
+                    if(confirm('Deseja realmente excluir essa permissão?')) {
+                        $.ajax({
+                            url: '{{ route("permissions.destroy") }}',
+                            type: 'DELETE',
+                            data: {
+                                id: id
+                            },
+                            dataType: 'json',
+                            headers: {
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                window.location.href = '{{ route("permissions.index") }}';
+                            }
+                    });
+                }
+            }
+        </script>
+    </x-slot>
 </x-app-layout>
