@@ -22,6 +22,7 @@
                             <tr class="border-b">
                                 <th class="text-left px-6 py-2" width="60">#Id</th>
                                 <th class="text-left px-6 py-2">Name</th>
+                                <th class="text-left px-6 py-2">Email</th>
                                 <th class="text-left px-6 py-2">Roles</th>
                                 <th class="text-left px-6 py-2" width="200">Created</th>
                                 <th class="text-center px-6 py-2" width="200">Action</th>
@@ -33,6 +34,7 @@
                                     <tr class="border-b">
                                         <td class="px-6 py-4 text-left">{{ $user->id }}</td>
                                         <td class="px-6 py-4 text-left">{{ $user->name }}</td>
+                                        <td class="px-6 py-4 text-left">{{ $user->email }}</td>
                                         <td class="px-6 py-4 text-left">
                                             {{ $user->roles->pluck('name')->join(', ') }}
                                         </td>

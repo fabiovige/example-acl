@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
 
@@ -26,12 +27,34 @@ class UserController extends Controller
 
     public function create()
     {
-        return view('users.create');
+        $roles = Role::orderBy('name', 'ASC')->get();
+        return view('users.create',[
+            'roles' => $roles
+        ]);
     }
 
     public function store(Request $request)
     {
-        dd($request->all());
+        $validated = Validator::make($request->all(),[
+            'name' => 'required|string|min:3|max:255',
+            'email' => 'required|string|email|min:3|max:255|unique:users,email',
+            'password' => 'required|string|min:8',
+            'password_confirmation' => 'required|string|min:8|same:password',
+        ]);
+
+        if($validated->fails()){
+            return redirect()->route('users.create')->withErrors($validated)->withInput();
+        }
+
+        $user = new User();
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        $user->syncRoles($request->roles);
+
+        return redirect()->route('users.index')->with('success', 'User created successfully');
     }
 
     public function edit(string $id)
@@ -51,8 +74,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $validated = Validator::make($request->all(),[
             'name' => 'required|string|min:3|max:255',
-            //'email' => 'required|string|email|max:255|unique:users,email,'.$id.',id',
-            //'password' => 'nullable|string|min:8',
+            'email' => 'required|string|email|min:3|max:255|unique:users,email,'.$id.',id',
         ]);
 
         if($validated->fails()){
@@ -60,18 +82,24 @@ class UserController extends Controller
         }
 
         $user->name = $request->name;
+        $user->email = $request->email;
         $user->save();
 
         $user->syncRoles($request->roles);
 
         return redirect()->route('users.index')->with('success', 'User updated successfully');
-
-        dd($request->all());
     }
 
-    public function destroy(User $user)
+    public function destroy(Request $request)
     {
+        $id = $request->id;
+        $user = User::findOrFail($id);
+        if($user === null) {
+            session()->flash('error', 'User not found');
+            return response()->json(['status' => false]);
+        }
         $user->delete();
-        return redirect()->route('users.index')->with('success', 'User deleted successfully');
+        session()->flash('success', 'User deleted successfully');
+        return response()->json(['status' => true]);
     }
 }
