@@ -17,23 +17,29 @@
                     </x-nav-link>
                 </div>
 
+                @can('view permissions')
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('permissions.index')" :active="request()->routeIs('permissions')">
-                        {{ __('Permissions') }}
-                    </x-nav-link>
-                </div>
+                            {{ __('Permissions') }}
+                        </x-nav-link>
+                    </div>
+                @endcan
 
+                @can('view roles')
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('roles.index')" :active="request()->routeIs('roles')">
-                        {{ __('Roles') }}
-                    </x-nav-link>
-                </div>
+                            {{ __('Roles') }}
+                        </x-nav-link>
+                    </div>
+                @endcan
 
+                @can('view users')
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                     <x-nav-link :href="route('users.index')" :active="request()->routeIs('users')">
-                        {{ __('Users') }}
-                    </x-nav-link>
-                </div>
+                            {{ __('Users') }}
+                        </x-nav-link>
+                    </div>
+                @endcan
 
             </div>
 

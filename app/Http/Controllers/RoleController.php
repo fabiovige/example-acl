@@ -9,6 +9,11 @@ use Spatie\Permission\Models\Permission;
 
 class RoleController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['permission:view roles|edit roles|delete roles|create roles']);
+    }
+
     public function index()
     {
         $roles = Role::orderBy('created_at', 'DESC')->paginate(25);
